@@ -1,0 +1,3 @@
+disallowedInPath=\ \r\n"'*?><|\=(){};&$,%@
+eclipse.preferences.version=1
+saveAndAddLine=true

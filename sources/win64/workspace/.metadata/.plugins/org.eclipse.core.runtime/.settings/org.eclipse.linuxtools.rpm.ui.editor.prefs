@@ -1,0 +1,6 @@
+RpmSpecTaskTags=TODO;FIXME;
+eclipse.preferences.version=1
+macroProposalsFilespath=C\:\\Users\\atomx/.rpmmacros;/usr/lib/rpm/macros;/etc/rpm;
+rpmLisMastBuild=1410105198778
+rpmListBackgroundBuild=false
+templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates/>

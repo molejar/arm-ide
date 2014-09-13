@@ -1,0 +1,3 @@
+doxygen.customs=eclox.core.doxygen.CustomDoxygen tools\\doxygen\n
+doxygen.default=eclox.core.doxygen.CustomDoxygen tools\\doxygen
+eclipse.preferences.version=1

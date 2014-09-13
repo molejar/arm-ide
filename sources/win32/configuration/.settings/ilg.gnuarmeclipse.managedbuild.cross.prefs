@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+toolchain.name=GNU Tools for ARM Embedded Processors
+toolchain.path.1287942917=${eclipse_home}/toolchain
