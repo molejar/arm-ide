@@ -24,7 +24,7 @@ while [[ $# > 0 ]]; do
   case $param in
     -v | --version)
       echo
-      echo "ArmIDE creator version: $PROJECT_VNUM"
+      echo "$PROJECT_NAME creator version: $PROJECT_VNUM"
       echo
       exit 0
       ;;
@@ -123,14 +123,11 @@ DOXYGEN_PLG="http://www.mcternan.me.uk/mscgen/software/mscgen-w32-0.20.zip"
 case $OS_TYPE in
   win32 | win64)   
     OPENOCD_PKG="openocd-0.8.0-win.7z"
-    OPENOCD_URL="http://www.freddiechopin.info/en/download/category/4-openocd?download=109%3Aopenocd-0.8.0"
-    ;;
-
+    OPENOCD_URL="http://www.freddiechopin.info/en/download/category/4-openocd?download=109%3Aopenocd-0.8.0";;
   linux32 | linux64) 
     OPENOCD_PKG="openocd-0.8.0-src.tar.gz"
     #OPENOCD_URL="git://repo.or.cz/openocd.git"
-    OPENOCD_URL="http://downloads.sourceforge.net/project/openocd/openocd/0.8.0/openocd-0.8.0.tar.gz?r=&ts=1410613104&use_mirror=garr"
-    ;;
+    OPENOCD_URL="http://downloads.sourceforge.net/project/openocd/openocd/0.8.0/openocd-0.8.0.tar.gz?r=&ts=1410613104&use_mirror=garr";;
 esac
 
 
@@ -185,7 +182,7 @@ function print_msg()
 }
 
 
-# Prepare Directories
+# Prepare Directories function
 function initialize_dirs()
 {
   print_msg "Install Directories"
@@ -203,8 +200,8 @@ function initialize_dirs()
 }
 
 
-# Download Package
-# Usage: download_package <package_url> 
+# Download Package function
+# Usage: download_package <package_url>
 function download_package()
 {
   local PKG_URL="$1"
@@ -248,8 +245,11 @@ function download_package()
 }
 
 
-# Extract Package
-# Usage:
+# Extract Package function
+# Usage: install_package <pkg> <outdir> [pproc]
+#        pkg    - Package Archive
+#        outdir - Install Directory
+#        pproc  - Post-processing function
 function install_package()
 {
   local PKG_NAME="$1"
@@ -303,8 +303,8 @@ function install_package()
   print_msg "Successfully Done \n"
 }
 
-# 
-# Usage: 
+# OpenOCD post-procesing function
+# Usage: postproc_openocd <srcdir> <outdir>
 function postproc_openocd()
 {
   local SRC_DIR="$1"
@@ -360,30 +360,30 @@ function postproc_openocd()
   fi
 }
 
-# 
-# Usage: 
+# Doxygen plugin post-procesing function
+# Usage: postproc_doxyplg <srcdir> <outdir>
 function postproc_doxyplg()
 {
   local SRC_DIR="$1"
   local OUT_DIR="$2"
 
-  mv ${SRC_DIR}/bin/* ${OUT_DIR}/
+  cp -rf ${SRC_DIR}/bin/* ${OUT_DIR}/
 }
 
 
-# 
-# Usage: 
+# SVD patch post-procesing function
+# Usage: postproc_svdpatch <srcdir> <outdir>
 function postproc_svdpatch()
 {
   local SRC_DIR="$1"
   local OUT_DIR="$2"
 
-  mv ${SRC_DIR}/eclipse/* ${OUT_DIR}/
+  cp -rf ${SRC_DIR}/eclipse/* ${OUT_DIR}/
 }
 
 
 # Install eclipse plugin
-# Usage: 
+# Usage: install_eplugin <url> <plg> <desc>
 function install_eplugin() 
 {
   print_msg "Download and Install $3 plugin"
@@ -422,8 +422,9 @@ function install_eplugin()
   print_msg "Installation Done \n"
 }
 
-# Create target archive
-# Usage: 
+# Create target archive function
+# Usage: create_archive <arch_type>
+#        arch_type: --gz, --zip
 function create_archive()
 {
   local BUILD_DATE=`date +%y%m%d%H%M` 
@@ -451,9 +452,9 @@ function create_archive()
   print_msg "Successfully Done \n"
 }
 
-###########################################################################################################################################################
-# SCRIPT STARTUP
-###########################################################################################################################################################
+#####################################################################################
+# MAIN
+#####################################################################################
 echo "" > $LOG_FILE
 
 # Initialization
