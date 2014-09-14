@@ -1,10 +1,16 @@
 #!/bin/bash
 
+BUILD_ARCH=`uname -m`
+
 # Default OS type (win32, win64, linux32, linux64)
-OS_TYPE="linux64"
+if [ "$BUILD_ARCH" == "x86_64" ]; then
+  OS_TYPE="linux64"
+else
+  OS_TYPE="linux32"
+fi
 
 # Default name of log file
-LOG_FILE="${0%.*}.log"
+LOG_FILE="`echo ${0##*/} | sed 's/sh/log/g'`"
 
 # Default debug Level (0 - 5)
 DEBUG_LEVEL="0"
@@ -146,8 +152,7 @@ LOG_FILE=$WORKING_DIR/${LOG_FILE}
 
 if (( $DEBUG_LEVEL > 1 )); then
   echo ""
-  echo "Internal Variables:"
-  echo "PROJECT_NAME  = $PROJECT_NAME"
+  echo "Internal Variables of $0:"
   echo "OS_TYPE       = $OS_TYPE"
   echo "LOG_FILE      = $LOG_FILE"
   echo "ECLIPSE_URL   = $ECLIPSE_URL"
@@ -273,9 +278,9 @@ function install_package()
 
   # Parse arguments
   case $PKG_EXT in
-    gz)  tar -xzf ${DOWNLOAD_DIR}/${PKG_NAME} -C ${PKG_WORKDIR}/ ;;
-    bz2) tar -xjf ${DOWNLOAD_DIR}/${PKG_NAME} -C ${PKG_WORKDIR}/ ;;
-    zip) unzip -q ${DOWNLOAD_DIR}/${PKG_NAME} -d ${PKG_WORKDIR}/ ;;
+    gz)  tar -xzf ${DOWNLOAD_DIR}/${PKG_NAME} -C ${PKG_WORKDIR} 2>&1 >> ${LOG_FILE} ;;
+    bz2) tar -xjf ${DOWNLOAD_DIR}/${PKG_NAME} -C ${PKG_WORKDIR} 2>&1 >> ${LOG_FILE} ;;
+    zip) unzip -q ${DOWNLOAD_DIR}/${PKG_NAME} -d ${PKG_WORKDIR} 2>&1 >> ${LOG_FILE} ;;
     7z)  7z x ${DOWNLOAD_DIR}/${PKG_NAME} -o${PKG_WORKDIR} 2>&1 >> ${LOG_FILE} ;;
     *) print_msg "E" "Unsupported archive: $PKG_EXT"; exit 1 ;;
   esac
@@ -328,6 +333,10 @@ function postproc_openocd()
     # Build OpenOCD
     cd ${SRC_DIR}
     mkdir build
+
+    if [ "$BUILD_ARCH" == "x86_64" -a "$OS_TYPE" == "linux32" ]; then
+      export CFLAGS="-m32"
+    fi
 
     #./bootstrap && \
     ./configure --enable-maintainer-mode \

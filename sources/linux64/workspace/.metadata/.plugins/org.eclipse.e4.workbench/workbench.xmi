@@ -13,7 +13,7 @@
     <children xsi:type="basic:PartSashContainer" xmi:id="_ltGkwTIzEeS_CuNDUxUkPA" selectedElement="_ltGkwjIzEeS_CuNDUxUkPA" horizontal="true">
       <children xsi:type="advanced:PerspectiveStack" xmi:id="_ltGkwjIzEeS_CuNDUxUkPA" elementId="PerspectiveStack" containerData="7500" selectedElement="_l04AsDIzEeS_CuNDUxUkPA">
         <children xsi:type="advanced:Perspective" xmi:id="_l04AsDIzEeS_CuNDUxUkPA" elementId="org.eclipse.cdt.ui.CPerspective" selectedElement="_l04AsTIzEeS_CuNDUxUkPA" label="C/C++" iconURI="platform:/plugin/org.eclipse.cdt.ui/icons/view16/c_pers.gif">
-          <persistedState key="persp.hiddenItems" value="persp.hideToolbarSC:org.eclipse.debug.ui.commands.RunToLine,persp.hideToolbarSC:org.eclipse.ui.edit.text.toggleShowSelectedElementOnly,persp.hideToolbarSC:org.eclipse.debug.ui.commands.Restart,"/>
+          <persistedState key="persp.hiddenItems" value="persp.hideToolbarSC:org.eclipse.debug.ui.commands.RunToLine,persp.hideToolbarSC:org.eclipse.ui.edit.text.toggleShowSelectedElementOnly,persp.hideToolbarSC:org.eclipse.debug.ui.commands.Restart,persp.hideToolbarSC:org.eclipse.debug.internal.ui.actions.RunDropDownAction,persp.hideToolbarSC:org.eclipse.debug.internal.ui.actions.ProfileDropDownAction,persp.hideToolbarSC:org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar,"/>
           <tags>persp.actionSet:org.eclipse.mylyn.context.ui.actionSet</tags>
           <tags>persp.actionSet:org.eclipse.mylyn.doc.actionSet</tags>
           <tags>persp.actionSet:org.eclipse.mylyn.tasks.ui.navigation</tags>
