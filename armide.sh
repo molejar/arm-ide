@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Build OS architecture
 BUILD_ARCH=`uname -m`
 
 # Default OS type (win32, win64, linux32, linux64)
@@ -8,6 +9,15 @@ if [ "$BUILD_ARCH" == "x86_64" ]; then
 else
   OS_TYPE="linux32"
 fi
+
+# Default eclipse version (kepler-SR2, luna-R, ...)
+ECLIPSE_VER="kepler-SR2"
+
+# Default Java JRE version (7 or 8)
+JRE_VER="7"
+
+# Default compression of output archive
+COMPRESSION="zip"
 
 # Default name of log file
 LOG_FILE="`echo ${0##*/} | sed 's/sh/log/g'`"
@@ -35,25 +45,23 @@ while [[ $# > 0 ]]; do
       exit 0
       ;;
 
-    -t | --ostype)
-      [ "$1" != "" ] && OS_TYPE="$1" && shift
-      ;;
-
-    -l | --logfile)
-      [ "$1" != "" ] && LOG_FILE="$1" && shift
-      ;;
-
-    -d | --debug)
-      [ "$1" != "" ] && DEBUG_LEVEL="$1" && shift
-      ;;
+    -t | --ostype)  [ "$1" != "" ] && OS_TYPE="$1" && shift ;;
+    -e | --eclipse) [ "$1" != "" ] && ECLIPSE_VER="$1" && shift ;;
+    -j | --jre-ver) [ "$1" != "" ] && JRE_VER="$1" && shift ;;
+    -c | --compres) [ "$1" != "" ] && COMPRESSION="$1" && shift ;;
+    -l | --logfile) [ "$1" != "" ] && LOG_FILE="$1" && shift ;;
+    -d | --debug)   [ "$1" != "" ] && DEBUG_LEVEL="$1" && shift ;;
 
     -? | --help)
       echo
       echo "Usage: $0 [param] [arg]"
-      echo "params can be one or more of the following :"
+      echo "Params can be one or more of the following:"
       echo "  -?, --help           : Print out this help message"
+      echo "  -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)"
+      echo "  -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)"
+      echo "  -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)"
+      echo "  -c, --compres <type> : Set compression type (zip, gz, bz2, ...)"
       echo "  -l, --logfile <name> : The name of log file"
-      echo "  -t, --ostype  <os>   : Select OS type (win32, win64, linux32, linux64)"
       echo "  -v, --version        : Print out version number"
       echo
       exit 0
@@ -72,14 +80,14 @@ done
 
 # Eclipse Package
 case $OS_TYPE in
-  win32)   ECLIPSE_PKG="eclipse-cpp-kepler-SR2-win32.zip";;
-  win64)   ECLIPSE_PKG="eclipse-cpp-kepler-SR2-win32-x86_64.zip";;
-  linux32) ECLIPSE_PKG="eclipse-cpp-kepler-SR2-linux-gtk.tar.gz";;
-  linux64) ECLIPSE_PKG="eclipse-cpp-kepler-SR2-linux-gtk-x86_64.tar.gz";;
+  win32)   ECLIPSE_PKG="eclipse-cpp-${ECLIPSE_VER}-win32.zip";;
+  win64)   ECLIPSE_PKG="eclipse-cpp-${ECLIPSE_VER}-win32-x86_64.zip";;
+  linux32) ECLIPSE_PKG="eclipse-cpp-${ECLIPSE_VER}-linux-gtk.tar.gz";;
+  linux64) ECLIPSE_PKG="eclipse-cpp-${ECLIPSE_VER}-linux-gtk-x86_64.tar.gz";;
 esac
 
 # Eclipse Download Link
-ECLIPSE_URL="http://mirror.netcologne.de/eclipse/technology/epp/downloads/release/kepler/SR2/$ECLIPSE_PKG"
+ECLIPSE_URL="http://mirror.netcologne.de/eclipse/technology/epp/downloads/release/${ECLIPSE_VER/-/\/}/$ECLIPSE_PKG"
 
 
 # Toolchain Package
@@ -103,8 +111,8 @@ case $OS_TYPE in
 esac
 
 # JRE Download Link
-JAVA_PAGE=`curl http://www.oracle.com/technetwork/java/javase/downloads/index.html 2>/dev/null | sed -ne 's/.*href="\([/a-z]*jre7-downloads-[0-9]*\.html\)".*/\1/p'| uniq`
-JAVA_URL=`curl http://www.oracle.com$JAVA_PAGE 2>/dev/null | sed -ne "s/.*\"filepath\":\"\(http.*jre-7.*-${JRE_TYPE}\)\".*/\1/p"`
+JAVA_PAGE=`curl http://www.oracle.com/technetwork/java/javase/downloads/index.html 2>/dev/null | sed -ne "s/.*href=\"\([/a-z]*jre${JRE_VER}-downloads-[0-9]*\.html\)\".*/\1/p" | uniq`
+JAVA_URL=`curl http://www.oracle.com$JAVA_PAGE 2>/dev/null | sed -ne "s/.*\"filepath\":\"\(http.*jre-${JRE_VER}.*-${JRE_TYPE}\)\".*/\1/p"`
 JAVA_PKG=${JAVA_URL##*/}
 JAVA_COOKIE_VAL=`echo "http://www.oracle.com$JAVA_PAGE" | sed -e 's/%/%25/g' -e 's/ /%20/g' -e 's/!/%21/g' -e 's/"/%22/g' -e 's/#/%23/g' -e 's/$/%24/g' -e 's/\&/%26/g' -e "s/'/%27/g" -e 's/(/%28/g' -e 's/)/%29/g' -e 's/\*/%2A/g' -e 's/+/%2B/g' -e 's/,/%2C/g' -e 's/-/%2D/g' -e 's#/#%2F#g' -e 's/:/%3A/g' -e 's/;/%3B/g' -e 's//%3E/g' -e 's/?/%3F/g' -e 's/@/%40/g' -e 's/\[/%5B/g' -e 's/\\\/%5C/g' -e 's/\]/%5D/g' -e 's/\^/%5E/g' -e 's/_/%5F/g' -e 's/\`/%60/g' -e 's/{/%7B/g' -e 's/|/%7C/g' -e 's/}/%7D/g' -e 's/~/%7E/g' -e 's/%24$//'`
 JAVA_COOKIES="Cookie: gpw_e24=${JAVA_COOKIE_VAL}; oraclelicense=accept-securebackup-cookie"
@@ -150,7 +158,7 @@ TEMP_DIR=$WORKING_DIR/temp
 LOG_FILE=$WORKING_DIR/${LOG_FILE}
 
 
-if (( $DEBUG_LEVEL > 1 )); then
+if [[ $DEBUG_LEVEL > 1 ]]; then
   echo ""
   echo "Internal Variables of $0:"
   echo "OS_TYPE       = $OS_TYPE"
@@ -356,6 +364,10 @@ function postproc_openocd()
       exit 1
     fi
 
+    if [ "$BUILD_ARCH" == "x86_64" -a "$OS_TYPE" == "linux32" ]; then
+      unset CFLAGS
+    fi
+
     cp -rf build/bin build/share/openocd/
 
     make -j 9 pdf 2>&1 >> ${LOG_FILE} && {
@@ -398,8 +410,8 @@ function install_eplugin()
   print_msg "Download and Install $3 plugin"
 
   local ECLIPSE_CMD="${RELEASE_DIR}/$PROJECT_NAME/eclipse"
-  local WINE=""
   local MAX_ITER="6"
+  local WINE=""
 
   case $OS_TYPE in
     win32) WINE="wine";   ECLIPSE_CMD="${ECLIPSE_CMD}c.exe";;
@@ -444,8 +456,9 @@ function create_archive()
   cd $RELEASE_DIR
 
   case $1 in
-    --gz)  tar -czf ${PACKAGE_NAME}.tar.gz "$PROJECT_NAME";;
-    --zip) zip -9 -q -r ${PACKAGE_NAME}.zip "$PROJECT_NAME";;
+    zip) zip -9 -q -r ${PACKAGE_NAME}.zip "$PROJECT_NAME";;
+    gz)  tar -czf ${PACKAGE_NAME}.tar.gz  "$PROJECT_NAME";;
+    bz2) tar -cjf ${PACKAGE_NAME}.tar.bz2 "$PROJECT_NAME";;
     *) print_msg "E" "Unsupported archive: $1"; exit 1 ;;
   esac
 
@@ -517,11 +530,7 @@ install_package "$SVDPATCH_PKG" "$PROJECT_NAME" "postproc_svdpatch"
 cp -rf ${SOURCES_DIR}/*  ${RELEASE_DIR}/$PROJECT_NAME/  
 
 # Create release package
-if [ "$OS_TYPE" == "win32" -o "$OS_TYPE" == "win64" ]; then
-  create_archive --zip
-else
-  create_archive --gz
-fi
+create_archive "$COMPRESSION"
 
 # Clean working dirs
 print_msg "Clean"
