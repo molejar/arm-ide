@@ -14,9 +14,9 @@ This repository doesn't contain a complete IDE but only a bash script for its au
 * [OpenSDA](http://www.pemicro.com/opensda/index.cfm) - Freescale debug/programming interface.
 * [Segger JLink](http://www.segger.com/jlink-software-beta-version.html) - must be installed manually into "sources/*/tools/segger_jlink".
 
-###Eclipse has preinstaled the follow plug-ins:
+###Has pre-installed the follow plug-ins:
 * [GNU ARM Eclipse](http://gnuarmeclipse.livius.net/blog/) - set of eclipse plugins for create, build and debug ARM projects.
-* [EmbSysRegView](http://embsysregview.sourceforge.net/) - plugin for monitoring and modifying ARM peripheral registers.
+* [EmbSysRegView](http://embsysregview.sourceforge.net/) - plugin for monitoring and modifying the values of ARM peripheral registers.
 * [PEMicro](http://www.pemicro.com/opensda/index.cfm) - add support of OpenSDA and OpenJTAG debuggers.
 * [Eclox](http://home.gna.org/eclox/) - simple doxygen front-end for Eclipse.
 * [EHEP](http://ehep.sourceforge.net/) - hex editor plugin.
@@ -36,17 +36,16 @@ Go inside `arm-ide` directory and run `./armide.sh -?` for list of supported arg
 
 ``` bash
     $ ./armide.sh -?
-    $
+    $ 
     $ Usage: ./armide.sh [param] [arg]
     $ Params can be one or more of the following:
     $   -?, --help           : Print out this help message
     $   -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)
     $   -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)
     $   -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)
-    $   -c, --compres <type> : Set compression type (zip, gz, bz2)
+    $   -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb or exe)"
     $   -l, --logfile <name> : The name of log file
     $   -v, --version        : Print out version number
-
 ```
 
 Run the script with correct args and wait till finish. If the build was successful, then the complete ArmIDE is located inside `release` directory.

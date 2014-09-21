@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Build OS architecture
+# Build architecture and OS
 BUILD_ARCH=`uname -m`
+BUILD_OS=`uname -o`
 
 # Default OS type (win32, win64, linux32, linux64)
 if [ "$BUILD_ARCH" == "x86_64" ]; then
@@ -16,8 +17,8 @@ ECLIPSE_VER="kepler-SR2"
 # Default Java JRE version (7 or 8)
 JRE_VER="7"
 
-# Default compression of output archive
-COMPRESSION="zip"
+# Default output package type
+OUT_TYPE="zip"
 
 # Default name of log file
 LOG_FILE="`echo ${0##*/} | sed 's/sh/log/g'`"
@@ -48,7 +49,7 @@ while [[ $# > 0 ]]; do
     -t | --ostype)  [ "$1" != "" ] && OS_TYPE="$1" && shift ;;
     -e | --eclipse) [ "$1" != "" ] && ECLIPSE_VER="$1" && shift ;;
     -j | --jre-ver) [ "$1" != "" ] && JRE_VER="$1" && shift ;;
-    -c | --compres) [ "$1" != "" ] && COMPRESSION="$1" && shift ;;
+    -o | --out-pkg) [ "$1" != "" ] && OUT_TYPE="$1" && shift ;;
     -l | --logfile) [ "$1" != "" ] && LOG_FILE="$1" && shift ;;
     -d | --debug)   [ "$1" != "" ] && DEBUG_LEVEL="$1" && shift ;;
 
@@ -60,7 +61,7 @@ while [[ $# > 0 ]]; do
       echo "  -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)"
       echo "  -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)"
       echo "  -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)"
-      echo "  -c, --compres <type> : Set compression type (zip, gz, bz2, ...)"
+      echo "  -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb or exe)"
       echo "  -l, --logfile <name> : The name of log file"
       echo "  -v, --version        : Print out version number"
       echo
@@ -100,6 +101,7 @@ esac
 
 # Toolchain Download Link
 TOOLCHAIN_URL="https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q2-update/+download/$TOOLCHAIN_PKG"
+TOOLCHAIN_VER="4.8-2014-q2"
 
 
 # JAVA JRE Package
@@ -119,35 +121,44 @@ JAVA_COOKIES="Cookie: gpw_e24=${JAVA_COOKIE_VAL}; oraclelicense=accept-securebac
 #JAVA_COOKIES="Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie"
                       
 
+# Doxygen Version
+DOXYGEN_VER="1.8.8"
 
 # Doxygen Package
 case $OS_TYPE in
-  win32)   DOXYGEN_PKG="doxygen-1.8.8.windows.bin.zip";;
-  win64)   DOXYGEN_PKG="doxygen-1.8.8.windows.x64.bin.zip";;
-  linux32) DOXYGEN_PKG="doxygen-1.8.8.linux.bin.tar.gz";;
-  linux64) DOXYGEN_PKG="doxygen-1.8.8.linux.bin.tar.gz";;
+  win32)   DOXYGEN_PKG="doxygen-${DOXYGEN_VER}.windows.bin.zip";;
+  win64)   DOXYGEN_PKG="doxygen-${DOXYGEN_VER}.windows.x64.bin.zip";;
+  linux32) DOXYGEN_PKG="doxygen-${DOXYGEN_VER}.linux.bin.tar.gz";;
+  linux64) DOXYGEN_PKG="doxygen-${DOXYGEN_VER}.linux.bin.tar.gz";;
 esac
 
 # Doxygen Download Link
 DOXYGEN_URL="http://ftp.stack.nl/pub/users/dimitri/$DOXYGEN_PKG"
 DOXYGEN_PLG="http://www.mcternan.me.uk/mscgen/software/mscgen-w32-0.20.zip"
 
+# OpenOCD Version
+OPENOCD_VER="0.8.0"
 
 # OpenOCD Package
 case $OS_TYPE in
   win32 | win64)   
-    OPENOCD_PKG="openocd-0.8.0-win.7z"
-    OPENOCD_URL="http://www.freddiechopin.info/en/download/category/4-openocd?download=109%3Aopenocd-0.8.0";;
+    OPENOCD_PKG="openocd-${OPENOCD_VER}-win.7z"
+    OPENOCD_URL="http://www.freddiechopin.info/en/download/category/4-openocd?download=109%3Aopenocd-${OPENOCD_VER}";;
   linux32 | linux64) 
-    OPENOCD_PKG="openocd-0.8.0-src.tar.gz"
-    #OPENOCD_URL="git://repo.or.cz/openocd.git"
-    OPENOCD_URL="http://downloads.sourceforge.net/project/openocd/openocd/0.8.0/openocd-0.8.0.tar.gz?r=&ts=1410613104&use_mirror=garr";;
+    OPENOCD_PKG="openocd-${OPENOCD_VER}-src.tar.gz"
+    OPENOCD_URL="http://downloads.sourceforge.net/project/openocd/openocd/${OPENOCD_VER}/openocd-${OPENOCD_VER}.tar.gz";;
 esac
 
 
 # EmbSysReg SVD Patch
 SVDPATCH_URL="https://github.com/ErichStyger/mcuoneclipse/blob/master/EclipsePlugins/EmbSysReg/FSL_SVD_Patch%20V0.2%20for%20EmbSysRegV0.2.4.zip?raw=true"
 SVDPATCH_PKG="fsl_svd_patch.zip"
+
+
+# Windows installer package
+NSIS_URL="http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46.zip"
+NSIS_PKG=${NSIS_URL##*/}
+
 
 # Project directories
 WORKING_DIR=`pwd`
@@ -156,6 +167,7 @@ RELEASE_DIR=$WORKING_DIR/release
 SOURCES_DIR=$WORKING_DIR/sources/$OS_TYPE
 TEMP_DIR=$WORKING_DIR/temp
 LOG_FILE=$WORKING_DIR/${LOG_FILE}
+NSIS_SCRIPT=$WORKING_DIR/armide.nsi
 
 
 if [[ $DEBUG_LEVEL > 1 ]]; then
@@ -169,6 +181,29 @@ if [[ $DEBUG_LEVEL > 1 ]]; then
   echo ""
   exit 0
 fi
+
+
+# Create Read-me file function
+# Usage: add_info out_path
+function add_info()
+{
+  local OUTFILE="$1/INFO.txt"
+
+  touch $OUTFILE
+  echo "**********************************************" >> $OUTFILE
+  echo "$PROJECT_NAME - Eclipse based IDE for ARM MCUs" >> $OUTFILE
+  echo "**********************************************" >> $OUTFILE
+  echo "" >> $OUTFILE
+  echo "Assembled from following packages:" >> $OUTFILE
+  echo "- $ECLIPSE_PKG" >> $OUTFILE
+  echo "- $JAVA_PKG" >> $OUTFILE
+  echo "- $TOOLCHAIN_PKG" >> $OUTFILE
+  echo "- $OPENOCD_PKG" >> $OUTFILE
+  if [ "$OS_TYPE" == "win32" -o "$OS_TYPE" == "win64" ]; then
+    echo "- $DOXYGEN_PKG" >> $OUTFILE
+  fi
+  echo "" >> $OUTFILE
+}
 
 
 # Print Message function
@@ -192,6 +227,75 @@ function print_msg()
 
   echo -e "[$TIME] $MARK ${MESSAGE}"
   echo -e "[$TIME] $MARK ${MESSAGE}" >> $LOG_FILE
+}
+
+
+# Extract package archive function
+# Usage: extract <pkg_path> <out_dir> 
+function extract()
+{
+  local PKG_PATH="$1"
+  local PKG_EXT=${PKG_PATH##*.}
+  local PKG_ODIR="$2"
+
+  if [ ! -f ${PKG_PATH} ]; then
+    print_msg "E" "Package: $PKG_PATH doesn't exist"
+    exit 1
+  fi
+
+  # Parse arguments
+  case $PKG_EXT in
+    gz)  tar -xzf ${PKG_PATH} -C ${PKG_ODIR} 2>&1 >> ${LOG_FILE} ;;
+    bz2) tar -xjf ${PKG_PATH} -C ${PKG_ODIR} 2>&1 >> ${LOG_FILE} ;;
+    zip) unzip -q ${PKG_PATH} -d ${PKG_ODIR} 2>&1 >> ${LOG_FILE} ;;
+    7z)  7z x ${PKG_PATH} -o${PKG_ODIR} 2>&1 >> ${LOG_FILE} ;;
+    *) print_msg "E" "Unsupported archive: $PKG_EXT"; exit 1 ;;
+  esac
+
+  if [ $? -ne 0 ]; then
+    print_msg "E" "Extraction failed, exit ! \n"
+    rm -rfd ${PKG_ODIR}
+    exit 1
+  fi
+}
+
+
+# Compress source directory function
+# Usage: compress <src_dir> <name> <arch> <out_dir> 
+function compress()
+{
+  local SRC_PATH="$1"
+  local PKG_NAME="$2"
+  local PKG_EXT="$3"
+  local PKG_ODIR="$4"
+
+  if [ ! -d ${SRC_PATH} ]; then
+    print_msg "E" "Package source $SRC_PATH doesn't exist"
+    exit 1
+  fi
+
+  cd $SRC_PATH/..
+  SRC_PATH=${SRC_PATH##*/}
+
+  # Parse arguments
+  case $PKG_EXT in
+    gz)  PKG_NAME=${PKG_NAME}.tar.gz;  tar -czf "$PKG_NAME" "$SRC_PATH" 2>&1 >> ${LOG_FILE} ;;
+    bz2) PKG_NAME=${PKG_NAME}.tar.bz2; tar -cjf "$PKG_NAME" "$SRC_PATH" 2>&1 >> ${LOG_FILE} ;;
+    zip) PKG_NAME=${PKG_NAME}.zip; zip -9 -q -r "$PKG_NAME" "$SRC_PATH" 2>&1 >> ${LOG_FILE} ;;
+    7z)  PKG_NAME=${PKG_NAME}.7z;  zip -9 -q -r "$PKG_NAME" "$SRC_PATH" 2>&1 >> ${LOG_FILE} ;;
+    *) print_msg "E" "Unsupported archive: $PKG_EXT"; exit 1 ;;
+  esac
+
+  if [ $? -ne 0 ]; then
+    print_msg "E" "Compression failed, exit ! \n"
+    exit 1
+  fi
+
+  if [ "$PKG_ODIR" != "" ]; then
+    mv ${PKG_NAME} $PKG_ODIR 
+  fi
+
+  cd $WORKING_DIR
 }
 
 
@@ -282,31 +386,19 @@ function install_package()
     mkdir ${PKG_WORKDIR}
   fi 
 
-  print_msg "Install ${PKG_NAME} into $PKG_OUTDIR"
+  print_msg "Install $PKG_NAME into $PKG_OUTDIR"
 
-  # Parse arguments
-  case $PKG_EXT in
-    gz)  tar -xzf ${DOWNLOAD_DIR}/${PKG_NAME} -C ${PKG_WORKDIR} 2>&1 >> ${LOG_FILE} ;;
-    bz2) tar -xjf ${DOWNLOAD_DIR}/${PKG_NAME} -C ${PKG_WORKDIR} 2>&1 >> ${LOG_FILE} ;;
-    zip) unzip -q ${DOWNLOAD_DIR}/${PKG_NAME} -d ${PKG_WORKDIR} 2>&1 >> ${LOG_FILE} ;;
-    7z)  7z x ${DOWNLOAD_DIR}/${PKG_NAME} -o${PKG_WORKDIR} 2>&1 >> ${LOG_FILE} ;;
-    *) print_msg "E" "Unsupported archive: $PKG_EXT"; exit 1 ;;
-  esac
+  #extract package
+  extract "$DOWNLOAD_DIR/$PKG_NAME" "$PKG_WORKDIR"
 
-  if [ $? -ne 0 ]; then
-    print_msg "E" "Extraction failed, exit ! \n"
-    rm -rfd ${PKG_WORKDIR}
-    exit 1
-  fi
-
-  if [ "`ls ${PKG_WORKDIR} | wc -l`" == "1" ]; then
-    PKG_WORKDIR="$PKG_WORKDIR/`ls ${TEMP_DIR}`"
+  if [ "`ls $PKG_WORKDIR | wc -l`" == "1" ]; then
+    PKG_WORKDIR="$PKG_WORKDIR/`ls $TEMP_DIR`"
   fi
 
   mkdir -p ${RELEASE_DIR}/${PKG_OUTDIR}
 
   if [ "$POSTPROC" != "" ]; then
-    $POSTPROC "${PKG_WORKDIR}" "${RELEASE_DIR}/${PKG_OUTDIR}"
+    $POSTPROC "$PKG_WORKDIR" "$RELEASE_DIR/$PKG_OUTDIR"
   else
     mv ${PKG_WORKDIR}/* ${RELEASE_DIR}/${PKG_OUTDIR}/
   fi
@@ -334,6 +426,7 @@ function postproc_openocd()
 
     mv ${SRC_DIR}/bin/openocd*.exe ${SRC_DIR}/bin/openocd.exe
     rm -rfd ${SRC_DIR}/source
+    rm -rfd ${SRC_DIR}/scripts/target/1986ве1т.cfg
     mv ${SRC_DIR}/* ${OUT_DIR}/
 
   else
@@ -409,23 +502,28 @@ function install_eplugin()
 {
   print_msg "Download and Install $3 plugin"
 
-  local ECLIPSE_CMD="${RELEASE_DIR}/$PROJECT_NAME/eclipse"
   local MAX_ITER="6"
-  local WINE=""
+  local ECLIPSE_CMD="${RELEASE_DIR}/$PROJECT_NAME/eclipse"
 
-  case $OS_TYPE in
-    win32) WINE="wine";   ECLIPSE_CMD="${ECLIPSE_CMD}c.exe";;
-    win64) WINE="wine64"; ECLIPSE_CMD="${ECLIPSE_CMD}c.exe";;
-  esac 
+  if [ "$OS_TYPE" == "win32" -o "$OS_TYPE" == "win64" ]; then
+    ECLIPSE_CMD="${ECLIPSE_CMD}c.exe"
+  fi
 
   if [ ! -f ${ECLIPSE_CMD} ]; then
     print_msg "E" "Eclipse doesn't installed, exit ! \n"
     exit 1 
   fi
 
+  if [ "$BUILD_OS" == "GNU/Linux" ]; then
+    case $OS_TYPE in
+      win32) ECLIPSE_CMD="wine $ECLIPSE_CMD";;
+      win64) ECLIPSE_CMD="wine64 $ECLIPSE_CMD";;
+    esac 
+  fi
+
   for N in {2..10}; do
 
-    $WINE ${ECLIPSE_CMD} -application org.eclipse.equinox.p2.director -repository $1 -installIUs $2 -noSplash >> $LOG_FILE
+    ${ECLIPSE_CMD} -application org.eclipse.equinox.p2.director -repository $1 -installIUs $2 -noSplash >> $LOG_FILE
 
     if [ $? -ne 0 ]; then
       if [ $N != $MAX_ITER ]; then
@@ -443,41 +541,77 @@ function install_eplugin()
   print_msg "Installation Done \n"
 }
 
-# Create target archive function
-# Usage: create_archive <arch_type>
-#        arch_type: --gz, --zip
-function create_archive()
+
+function create_install_pkg()
 {
-  local BUILD_DATE=`date +%y%m%d%H%M` 
-  local PACKAGE_NAME="${PROJECT_NAME}-${OS_TYPE}-${BUILD_DATE}"
+  local NSIS_EXE=""
+  local PKG_NAME="$1"
 
-  print_msg "Create package ${PACKAGE_NAME}"
+  print_msg "Create Windows installation package ${PKG_NAME}.exe"
 
-  cd $RELEASE_DIR
+  extract "$DOWNLOAD_DIR/$NSIS_PKG" "$TEMP_DIR"
 
-  case $1 in
-    zip) zip -9 -q -r ${PACKAGE_NAME}.zip "$PROJECT_NAME";;
-    gz)  tar -czf ${PACKAGE_NAME}.tar.gz  "$PROJECT_NAME";;
-    bz2) tar -cjf ${PACKAGE_NAME}.tar.bz2 "$PROJECT_NAME";;
-    *) print_msg "E" "Unsupported archive: $1"; exit 1 ;;
-  esac
+  NSIS_EXE="wine $TEMP_DIR/`ls $TEMP_DIR`/makensis.exe"
+
+  $NSIS_EXE "/XOutFile release/${PKG_NAME}.exe" \
+            /DAPPNAME="$PROJECT_NAME" \
+            /DAPPVER="$PROJECT_VNUM" \
+            /DECLIPSEVER="$ECLIPSE_VER" \
+            /DGNUARMVER="$TOOLCHAIN_VER" \
+            /DJREVER="$JRE_VER" \
+            /DOPENOCDVER="$OPENOCD_VER" \
+            /DJLINKVER="4.90" \
+            /DDOXYGENVER="$DOXYGEN_VER" \
+            armide.nsi 2>&1 >> ${LOG_FILE}
 
   if [ $? -ne 0 ]; then
-    print_msg "E" "Compression failed, exit ! \n"
-    rm -rfd ${PACKAGE_NAME}.*
-    cd $WORKING_DIR
+    print_msg "E" "Creating Windows installer failed, exit ! \n"
     exit 1
   fi
 
-  cd $WORKING_DIR
+  print_msg "Successfully Done \n"
+}
+
+
+function create_debian_pkg()
+{
+  print_msg "Create debian package ${PKG_NAME}.deb"
 
   print_msg "Successfully Done \n"
 }
+
+
+function create_compress_pkg() 
+{
+  local PKG_NAME="$1"
+  local PKG_EXT="$2"
+
+  print_msg "Create release package ${PKG_NAME}.${PKG_EXT}"
+
+  compress "$RELEASE_DIR/$PROJECT_NAME" "$PKG_NAME" "$PKG_EXT" "$RELEASE_DIR"
+
+  print_msg "Successfully Done \n"
+}
+
 
 #####################################################################################
 # MAIN
 #####################################################################################
 echo "" > $LOG_FILE
+
+if [ "$OS_TYPE" == "linux32" -o "$OS_TYPE" == "linux64" -o "$OS_TYPE" == "win64" ]; then
+  if [ "$OUT_TYPE" == "exe" ]; then
+    print_msg "E" "Unsupported combination of args"
+    exit 1
+  fi
+fi
+
+if [ "$OUT_TYPE" == "deb" ]; then
+  print_msg "E" "Unsupported output format yet"
+  exit 1
+fi
+
+PACKAGE_NAME="${PROJECT_NAME}-${OS_TYPE}-`date +%y%m%d%H%M`"
 
 # Initialization
 initialize_dirs
@@ -491,6 +625,7 @@ download_package "${OPENOCD_URL}" -n "$OPENOCD_PKG"
 if [ "$OS_TYPE" == "win32" -o "$OS_TYPE" == "win64" ]; then
   download_package "${DOXYGEN_URL}"
   download_package "${DOXYGEN_PLG}"
+  [ "$OUT_TYPE" == "exe" ] && download_package "${NSIS_URL}"
 fi
 
 # Install Packages
@@ -527,10 +662,17 @@ install_eplugin http://chookapp.github.com/ChookappUpdateSite/ com.chookapp.org.
 install_package "$SVDPATCH_PKG" "$PROJECT_NAME" "postproc_svdpatch"
 
 # Add configuration and tool files
-cp -rf ${SOURCES_DIR}/*  ${RELEASE_DIR}/$PROJECT_NAME/  
+cp -rf ${SOURCES_DIR}/*  ${RELEASE_DIR}/$PROJECT_NAME/
+add_info "${RELEASE_DIR}/$PROJECT_NAME"  
 
 # Create release package
-create_archive "$COMPRESSION"
+case $OUT_TYPE in
+  exe) create_install_pkg "$PACKAGE_NAME";;
+  deb) create_debian_pkg "$PACKAGE_NAME";;
+  zip | gz | bz2)   
+       create_compress_pkg "$PACKAGE_NAME" "$OUT_TYPE";;
+  *)   print_msg "E" "Unsupported output format: $OUT_TYPE"; exit 1;;
+esac
 
 # Clean working dirs
 print_msg "Clean"
