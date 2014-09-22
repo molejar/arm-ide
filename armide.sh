@@ -134,6 +134,7 @@ esac
 
 # Doxygen Download Link
 DOXYGEN_URL="http://ftp.stack.nl/pub/users/dimitri/$DOXYGEN_PKG"
+DOXYGEN_DOC="http://sourceforge.net/projects/doxygen/files/rel-${DOXYGEN_VER}/doxygen_manual-${DOXYGEN_VER}.pdf.zip"
 DOXYGEN_PLG="http://www.mcternan.me.uk/mscgen/software/mscgen-w32-0.20.zip"
 
 # OpenOCD Version
@@ -370,7 +371,6 @@ function download_package()
 function install_package()
 {
   local PKG_NAME="$1"
-  local PKG_EXT=${PKG_NAME##*.}
   local PKG_OUTDIR="$2"
   local PKG_WORKDIR=${TEMP_DIR}
   local POSTPROC="$3"
@@ -428,6 +428,7 @@ function postproc_openocd()
     rm -rfd ${SRC_DIR}/source
     rm -rfd ${SRC_DIR}/scripts/target/1986ве1т.cfg
     mv ${SRC_DIR}/* ${OUT_DIR}/
+    mv ${OUT_DIR}/*.pdf ${OUT_DIR}/OpenOCD.pdf
 
   else
 
@@ -464,7 +465,7 @@ function postproc_openocd()
     cp -rf build/bin build/share/openocd/
 
     make -j 9 pdf 2>&1 >> ${LOG_FILE} && {
-      cp -rf doc/openocd.pdf build/share/openocd/OpenOCD_User’s_Guide.pdf
+      cp -rf doc/openocd.pdf build/share/openocd/OpenOCD.pdf
     }
   
     mv build/share/openocd/* ${OUT_DIR}/
@@ -473,6 +474,18 @@ function postproc_openocd()
 
   fi
 }
+
+
+# Doxygen plugin post-procesing function
+# Usage: postproc_doxydoc <srcdir> <outdir>
+function postproc_doxydoc()
+{
+  local SRC_DIR="$1"
+  local OUT_DIR="$2"
+
+  mv ${SRC_DIR} ${OUT_DIR}/Doxygen.pdf
+}
+
 
 # Doxygen plugin post-procesing function
 # Usage: postproc_doxyplg <srcdir> <outdir>
@@ -624,6 +637,7 @@ download_package "${SVDPATCH_URL}" -n "$SVDPATCH_PKG"
 download_package "${OPENOCD_URL}" -n "$OPENOCD_PKG"
 if [ "$OS_TYPE" == "win32" -o "$OS_TYPE" == "win64" ]; then
   download_package "${DOXYGEN_URL}"
+  download_package "${DOXYGEN_DOC}"
   download_package "${DOXYGEN_PLG}"
   [ "$OUT_TYPE" == "exe" ] && download_package "${NSIS_URL}"
 fi
@@ -635,6 +649,7 @@ install_package "$JAVA_PKG" "$PROJECT_NAME/jre"
 install_package "$OPENOCD_PKG" "$PROJECT_NAME/tools/openocd" "postproc_openocd"
 if [ "$OS_TYPE" == "win32" -o "$OS_TYPE" == "win64" ]; then
   install_package "${DOXYGEN_PKG}" "$PROJECT_NAME/tools/doxygen"
+  install_package "${DOXYGEN_DOC##*/}" "$PROJECT_NAME/tools/doxygen" "postproc_doxydoc"
   install_package "${DOXYGEN_PLG##*/}" "$PROJECT_NAME/tools/doxygen" "postproc_doxyplg"
 fi
 

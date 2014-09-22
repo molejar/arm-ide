@@ -60,7 +60,7 @@ Name "${APPNAME}"
 ;Default installation folder
 InstallDir "$PROGRAMFILES\${APPNAME}"
 ;Registry key to check for directory (so if you install again, it will overwrite the old one)
-InstallDirRegKey HKLM "${REGKEY}" ""
+InstallDirRegKey HKLM "${REGKEY}" "$INSTDIR"
 ;Request application privileges
 RequestExecutionLevel user
 ;Compresion type
@@ -120,7 +120,7 @@ Function .onInit
   ReadRegStr $0  "HKLM" "${REGKEYUNINSTALL}" "DisplayVersion"
   StrCmp "$0" "" done
   MessageBox MB_OK|MB_ICONEXCLAMATION "${APPNAME} version $0 is already installed. \
-  First uninstall the old version if wont install new." /SD IDOK
+  First uninstall the old version if want install new." /SD IDOK
   Abort
   done:
 FunctionEnd
@@ -181,8 +181,21 @@ Section -post
 
   ;create start-menu items
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
-  CreateShortCut  "$SMPROGRAMS\${APPNAME}\Uninstall.lnk"  "${UNINSTALLERPATH}" "" "${ICONPATH}"
   CreateShortCut  "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "${EXEPATH}"         "" "${ICONPATH}"
+  CreateShortCut  "$SMPROGRAMS\${APPNAME}\Uninstall.lnk"  "${UNINSTALLERPATH}" "" ""
+  CreateDirectory "$SMPROGRAMS\${APPNAME}\Manuals"
+  ${If} ${SectionIsSelected} ${SecJlink}
+    CreateShortCut "$SMPROGRAMS\${APPNAME}\Manuals\JLinkARM Users Guide.lnk" \
+    "$INSTDIR\tools\segger_jlink\JLinkARM.pdf" "" ""
+  ${EndIf}
+  ${If} ${SectionIsSelected} ${SecOpenOCD}
+    CreateShortCut "$SMPROGRAMS\${APPNAME}\Manuals\OpenOCD Users Guide.lnk" \
+    "$INSTDIR\tools\openocd\OpenOCD.pdf" "" ""
+  ${EndIf}
+  ${If} ${SectionIsSelected} ${SecDoxygen}
+    CreateShortCut "$SMPROGRAMS\${APPNAME}\Manuals\Doxygen Users Guide.lnk" \
+    "$INSTDIR\tools\doxygen\Doxygen.pdf" "" ""
+  ${EndIf}
 
   ; Write the uninstall keys for Windows
   WriteRegStr   HKLM "${REGKEYUNINSTALL}" "DisplayName"      "${APPNAME}"
@@ -218,6 +231,8 @@ Section "Uninstall"
 
   ;Delete Desktop and Start Menu Shortcuts
   Delete "$DESKTOP\${APPNAME}.lnk"
+  Delete "$SMPROGRAMS\${APPNAME}\Manuals\*.lnk"
+  RmDir  "$SMPROGRAMS\${APPNAME}\Manuals"
   Delete "$SMPROGRAMS\${APPNAME}\*.lnk"
   RmDir  "$SMPROGRAMS\${APPNAME}"
 
@@ -233,7 +248,7 @@ SectionEnd
 ;Components page descriptions
 ;----------------------------------------------------------------------------------------------------
 LangString DESC_SecEclipse ${LANG_ENGLISH} \
-"Eclipse CDT IDE for C/C++ developers."
+"Eclipse CDT IDE for C/C++ developers with pre-installed plugins for ARM Embedded Processors"
 
 LangString DESC_SecToolchain ${LANG_ENGLISH} \
 "GNU Tools for ARM Embedded Processors (Cortex-M and Cortex-R)"

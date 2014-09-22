@@ -4,17 +4,20 @@ Eclipse based IDE for ARM MCUs
 
 This repository doesn't contain a complete IDE but only a bash script for its automatic build in your PC. 
 
+<p align="center">
+  <img src="docs/debug_window.png" alt="ArmIDE: main window"/>
+</p>
 
-###It's assembled from this components:
+####It's assembled from this components:
 * [Eclipse](http://www.eclipse.org/downloads/) - C/C++ Developers IDE.
 * [Java JRE](http://java.com/en/download/manual.jsp?locale=en) - Java Runtime Environment.
-* [GNU ARM Toolchain](https://launchpad.net/gcc-arm-embedded) - Pre-built GNU toolchain from ARM Cortex-M & Cortex-R processors.
+* [GNU ARM Toolchain](https://launchpad.net/gcc-arm-embedded) - Pre-built GNU toolchain for ARM Cortex-M & Cortex-R processors.
 * [Doxygen](http://www.stack.nl/~dimitri/doxygen/download.html) - Documentation generator from source code.
 * [OpenOCD](http://openocd.sourceforge.net/) - Free and Open On-Chip Debugger.
 * [OpenSDA](http://www.pemicro.com/opensda/index.cfm) - Freescale debug/programming interface.
 * [Segger JLink](http://www.segger.com/jlink-software-beta-version.html) - must be installed manually into "sources/*/tools/segger_jlink".
 
-###Has pre-installed the follow plug-ins:
+####Has pre-installed the following plugins:
 * [GNU ARM Eclipse](http://gnuarmeclipse.livius.net/blog/) - set of eclipse plugins for create, build and debug ARM projects.
 * [EmbSysRegView](http://embsysregview.sourceforge.net/) - plugin for monitoring and modifying the values of ARM peripheral registers.
 * [PEMicro](http://www.pemicro.com/opensda/index.cfm) - add support of OpenSDA and OpenJTAG debuggers.
@@ -23,6 +26,20 @@ This repository doesn't contain a complete IDE but only a bash script for its au
 * [AnyEdit](http://andrei.gmxhome.de/anyedit/index.html) - adds several new tools to the context menu of text-based Eclipse editors.
 * [Bracketeer for C/C++](http://marketplace.eclipse.org/content/bracketeer-cc-cdt#.VBc7-nWSz0o) - show all what you need to know about the brackets in your code (highlight brackets, show information about closing brackets, etc...)
 
+
+## Dependencies
+
+The script was tested on Linux Mint 17, but it should working on all Ubuntu based distributions. You can create Windows Installer Package of ArmIDE directly from Linux. For make this script fully working you need install the following packages.
+
+``` bash
+    $ sudo apt-get update
+    $ sudo apt-get install wget curl wine zip unzip p7zip-full p7zip-rar rar git
+```
+If you want build the ArmIDE for Linux OS, then you need install the additional packages. This are required for compiling the OpenOCD debugger.
+
+``` bash
+    $ sudo apt-get install build-essential libtool libusb-1.0-0 libusb-dev libusb-1.0.0-dev libhidapi-hidraw0 libhidapi-dev
+```
 
 ## Usage
 
@@ -43,7 +60,7 @@ Go inside `arm-ide` directory and run `./armide.sh -?` for list of supported arg
     $   -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)
     $   -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)
     $   -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)
-    $   -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb or exe)"
+    $   -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb or exe)
     $   -l, --logfile <name> : The name of log file
     $   -v, --version        : Print out version number
 ```
