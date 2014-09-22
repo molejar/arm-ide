@@ -2,7 +2,7 @@ Eclipse based IDE for ARM MCUs
 ==============================
 
 
-This repository doesn't contain a complete IDE but only a bash script for its automatic build in your PC. 
+This repository doesn't contain a complete IDE but only a bash script for its automatic build in your PC. So far I have tested it on Linux Mint 17, but it should working on all Ubuntu based distributions. You can use this script for generating a fully customized IDE for ARM Embedded Processors. As target OS it is supporting Linux and Windows in both versions 32bit/64bit. Thanks to [Wine](https://www.winehq.org) which must be installed on build PC you can generate the Windows Installer Package directly from Linux. This script has many other options, which are described in section #Usage 
 
 <p align="center">
   <img src="docs/debug_window.png" alt="ArmIDE: main window"/>
@@ -11,9 +11,9 @@ This repository doesn't contain a complete IDE but only a bash script for its au
 ####It's assembled from this components:
 * [Eclipse](http://www.eclipse.org/downloads/) - C/C++ Developers IDE.
 * [Java JRE](http://java.com/en/download/manual.jsp?locale=en) - Java Runtime Environment.
-* [GNU ARM Toolchain](https://launchpad.net/gcc-arm-embedded) - Pre-built GNU toolchain for ARM Cortex-M & Cortex-R processors.
-* [Doxygen](http://www.stack.nl/~dimitri/doxygen/download.html) - Documentation generator from source code.
-* [OpenOCD](http://openocd.sourceforge.net/) - Free and Open On-Chip Debugger.
+* [GNU ARM Toolchain](https://launchpad.net/gcc-arm-embedded) - Pre-built GNU Tools for ARM Embedded Processors (Cortex-M and Cortex-R).
+* [Doxygen](http://www.stack.nl/~dimitri/doxygen/download.html) - Open source tool for generating documentation from annotated C/C++ sources.
+* [OpenOCD](http://openocd.sourceforge.net/) - Open On-Chip Debugger and In-System Programmer.
 * [OpenSDA](http://www.pemicro.com/opensda/index.cfm) - Freescale debug/programming interface.
 * [Segger JLink](http://www.segger.com/jlink-software-beta-version.html) - must be installed manually into "sources/*/tools/segger_jlink".
 
@@ -29,13 +29,13 @@ This repository doesn't contain a complete IDE but only a bash script for its au
 
 ## Dependencies
 
-The script was tested on Linux Mint 17, but it should working on all Ubuntu based distributions. You can create Windows Installer Package of ArmIDE directly from Linux. For make this script fully working you need install the following packages.
+Before running the script in your Linux OS, least you have to install these packages.
 
 ``` bash
     $ sudo apt-get update
     $ sudo apt-get install wget curl wine zip unzip p7zip-full p7zip-rar rar git
 ```
-If you want build the ArmIDE for Linux OS, then you need install the additional packages. This are required for compiling the OpenOCD debugger.
+If you want build the ArmIDE for Linux OS, then you need install the additional packages primary required for compiling the OpenOCD debugger.
 
 ``` bash
     $ sudo apt-get install build-essential libtool libusb-1.0-0 libusb-dev libusb-1.0.0-dev libhidapi-hidraw0 libhidapi-dev
