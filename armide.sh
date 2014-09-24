@@ -160,6 +160,10 @@ SVDPATCH_PKG="fsl_svd_patch.zip"
 NSIS_URL="http://downloads.sourceforge.net/project/nsis/NSIS%202/2.46/nsis-2.46.zip"
 NSIS_PKG=${NSIS_URL##*/}
 
+# Linux installer package
+MAKESELF_URL="http://megastep.org/makeself/makeself-2.1.5.run"
+
+
 
 # Project directories
 WORKING_DIR=`pwd`
@@ -555,7 +559,7 @@ function install_eplugin()
 }
 
 
-function create_install_pkg()
+function create_wininstall_pkg()
 {
   local NSIS_EXE=""
   local PKG_NAME="$1"
@@ -581,6 +585,29 @@ function create_install_pkg()
     print_msg "E" "Creating Windows installer failed, exit ! \n"
     exit 1
   fi
+
+  print_msg "Successfully Done \n"
+}
+
+
+function create_selfextract_pkg()
+{
+  local PKG_NAME="$1"
+
+  print_msg "Create self-extract package ${PKG_NAME}.bin"
+
+  download_package "${MAKESELF_URL}"
+
+  chmod a+x ${DOWNLOAD_DIR}/${MAKESELF_URL##*/}
+
+  ${DOWNLOAD_DIR}/${MAKESELF_URL##*/} --target ${TEMP_DIR}
+
+  cd ${RELEASE_DIR}
+
+  ${TEMP_DIR}/makeself.sh --notemp $PROJECT_NAME ${PKG_NAME}.bin \
+  "Eclipse based IDE for ARM MCUs" ./setup.sh
+
+  cd ${WORKING_DIR}
 
   print_msg "Successfully Done \n"
 }
@@ -682,8 +709,9 @@ add_info "${RELEASE_DIR}/$PROJECT_NAME"
 
 # Create release package
 case $OUT_TYPE in
-  exe) create_install_pkg "$PACKAGE_NAME";;
-  deb) create_debian_pkg "$PACKAGE_NAME";;
+  exe) create_wininstall_pkg  "$PACKAGE_NAME";;
+  bin) create_selfextract_pkg "$PACKAGE_NAME";;
+  deb) create_debian_pkg      "$PACKAGE_NAME";;
   zip | gz | bz2)   
        create_compress_pkg "$PACKAGE_NAME" "$OUT_TYPE";;
   *)   print_msg "E" "Unsupported output format: $OUT_TYPE"; exit 1;;

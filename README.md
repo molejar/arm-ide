@@ -13,12 +13,12 @@ This repository doesn't contain a complete IDE but only a bash script for its au
 
 ####It's assembled from this components:
 * [Eclipse](http://www.eclipse.org/downloads/) - C/C++ Developers IDE.
-* [Java JRE](http://java.com/en/download/manual.jsp?locale=en) - Java Runtime Environment.
+* [Java JRE](http://java.com/en/download/manual.jsp?locale=en) - Java Runtime Environment required by Eclipse.
 * [GNU ARM Toolchain](https://launchpad.net/gcc-arm-embedded) - Pre-built GNU Tools for ARM Embedded Processors (Cortex-M and Cortex-R).
 * [Doxygen](http://www.stack.nl/~dimitri/doxygen/download.html) - Open source tool for generating documentation from annotated C/C++ sources.
 * [OpenOCD](http://openocd.sourceforge.net/) - Open On-Chip Debugger and In-System Programmer.
-* [OpenSDA](http://www.pemicro.com/opensda/index.cfm) - PEMicro Debugger for Freescale MCUs.
-* [Segger JLink](http://www.segger.com/jlink-software-beta-version.html) - must be installed manually into "sources/*/tools/segger_jlink".
+* [OpenSDA](http://www.pemicro.com/opensda/index.cfm) - PEMicro Debugger for Freescale MCUs. 
+* [Segger JLink](http://www.segger.com/jlink-software-beta-version.html) - must be installed manually into "sources/<os>/tools/segger_jlink".
 
 ####Has pre-installed the following plugins:
 * [GNU ARM Eclipse](http://gnuarmeclipse.livius.net/blog/) - set of eclipse plugins for create, build and debug ARM projects.
@@ -41,7 +41,7 @@ You will need have a PC with OS Ubuntu Linux (or some other Ubuntu based distrib
 If you want build the Linux version of ArmIDE, then you need install additional packages, primary required for compiling the OpenOCD debugger.
 
 ``` bash
-    $ sudo apt-get install build-essential libtool libusb-1.0-0 libusb-dev libusb-1.0.0-dev libhidapi-hidraw0 libhidapi-dev
+    $ sudo apt-get install build-essential libtool autoconf texinfo libusb-dev libhidapi-dev libhidapi-hidraw0
 ```
 
 ## Usage
@@ -63,7 +63,7 @@ Go inside `arm-ide` directory and run `./armide.sh -?` for list of supported arg
     $   -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)
     $   -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)
     $   -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)
-    $   -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb or exe)
+    $   -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb, bin or exe)
     $   -l, --logfile <name> : The name of log file
     $   -v, --version        : Print out version number
 ```
