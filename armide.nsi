@@ -68,17 +68,32 @@ SetCompressor /SOLID lzma
 
 
 ;----------------------------------------------------------------------------------------------------
-;Interface Settings
+;MUI Interface Settings
 ;----------------------------------------------------------------------------------------------------
-!define MUI_ABORTWARNING
+; Icons
+!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
+!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\orange-uninstall.ico"
+
+; Header
 !define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_RIGHT
+!define MUI_HEADERIMAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Header\orange-r.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "${NSISDIR}\Contrib\Graphics\Header\orange-uninstall-r.bmp"
+
+; Wizard
+!define MUI_WELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\orange-uninstall.bmp"
+
+; Others
+!define MUI_ABORTWARNING
 !define MUI_COMPONENTSPAGE_SMALLDESC
 
 
 ;----------------------------------------------------------------------------------------------------
-;Pages
+;MUI Pages
 ;----------------------------------------------------------------------------------------------------
-;!insertmacro MUI_PAGE_LICENSE "${NSISDIR}\Docs\Modern UI\License.txt"
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE "LICENSE"
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES

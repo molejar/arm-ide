@@ -152,7 +152,7 @@ esac
 
 
 # EmbSysReg SVD Patch
-SVDPATCH_URL="https://github.com/ErichStyger/mcuoneclipse/blob/master/EclipsePlugins/EmbSysReg/FSL_SVD_Patch%20V0.2%20for%20EmbSysRegV0.2.4.zip?raw=true"
+SVDPATCH_URL="http://downloads.sourceforge.net/project/mcuoneclipse/Eclipse%20Plugins/EmbSysReg/FSL_SVD_Patch%20V0.3%20for%20EmbSysRegV0.2.4.zip"
 SVDPATCH_PKG="fsl_svd_patch.zip"
 
 

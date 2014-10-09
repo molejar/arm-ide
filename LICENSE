@@ -1,0 +1,17 @@
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+All embedded modules are distributed under own license:
+
+- ECLIPSE (http://www.eclipse.org/legal/epl-v10.html)
+- TOOLCHAIN (https://launchpad.net/gcc-arm-embedded)
+- JRE (http://www.java.com/license)
+- DOXYGEN (https://github.com/doxygen/doxygen/blob/master/LICENSE)
+- OPENOCD (http://openocd.sourceforge.net)
+- JLINK (https://www.segger.com/terms-of-use.html)
