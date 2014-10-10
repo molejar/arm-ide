@@ -35,13 +35,13 @@ This repository doesn't contain a complete IDE but only a bash script for its au
 You will need have a PC with OS Ubuntu Linux (or some other Ubuntu based distribution). At first you need update the install repositories and then you have install all the following packages. After that you will have a ready Linux OS for building the Windows version of ArmIDE.
 
 ``` bash
-    $ sudo apt-get update
-    $ sudo apt-get install wget curl wine zip unzip p7zip-full p7zip-rar rar git
+  $ sudo apt-get update
+  $ sudo apt-get install wget curl wine zip unzip p7zip-full p7zip-rar rar git
 ```
 If you want build the Linux version of ArmIDE, then you need install additional packages, primary required for compiling the OpenOCD debugger.
 
 ``` bash
-    $ sudo apt-get install build-essential libtool autoconf texinfo libusb-dev libhidapi-dev libhidapi-hidraw0
+  $ sudo apt-get install build-essential libtool autoconf texlive texinfo libusb-dev libusb-1.0-0-dev libhidapi-dev libhidapi-hidraw0
 ```
 
 ## Usage
@@ -49,23 +49,23 @@ If you want build the Linux version of ArmIDE, then you need install additional 
 Clone the project into your local directory
 
 ``` bash
-    $ git clone git://github.com/molejar/arm-ide.git
+  $ git clone git://github.com/molejar/arm-ide.git
 ```
 
 Go inside `arm-ide` directory and run `./armide.sh -?` for list of supported arguments
 
 ``` bash
-    $ ./armide.sh -?
-    $ 
-    $ Usage: ./armide.sh [param] [arg]
-    $ Params can be one or more of the following:
-    $   -?, --help           : Print out this help message
-    $   -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)
-    $   -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)
-    $   -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)
-    $   -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb, bin or exe)
-    $   -l, --logfile <name> : The name of log file
-    $   -v, --version        : Print out version number
+  $ ./armide.sh -?
+  $
+  $ Usage: ./armide.sh [param] [arg]
+  $ Params can be one or more of the following:
+  $   -?, --help           : Print out this help message
+  $   -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)
+  $   -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)
+  $   -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)
+  $   -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb, bin or exe)
+  $   -l, --logfile <name> : The name of log file
+  $   -v, --version        : Print out version number
 ```
 
 Run the script with correct args and wait till finish. If the build was successful, then the complete ArmIDE is located inside `release` directory.
