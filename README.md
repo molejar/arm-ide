@@ -63,7 +63,7 @@ Go inside `arm-ide` directory and run `./armide.sh -?` for list of supported arg
   $   -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)
   $   -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)
   $   -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)
-  $   -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb, bin or exe)
+  $   -o, --out-pkg <type> : Set output package type (archive or install)
   $   -l, --logfile <name> : The name of log file
   $   -v, --version        : Print out version number
 ```
