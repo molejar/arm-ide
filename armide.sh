@@ -11,14 +11,14 @@ else
   OS_TYPE="linux32"
 fi
 
-# Default eclipse version (kepler-SR2, luna-R, ...)
+# Default eclipse version (kepler-SR2, luna-SR1, ...)
 ECLIPSE_VER="kepler-SR2"
 
 # Default Java JRE version (7 or 8)
 JRE_VER="7"
 
 # Default output package type
-OUT_TYPE="zip"
+OUT_TYPE="install"
 
 # Default name of log file
 LOG_FILE="`echo ${0##*/} | sed 's/sh/log/g'`"
@@ -30,7 +30,7 @@ DEBUG_LEVEL="0"
 PROJECT_NAME="ArmIDE"
 
 # Project version number
-PROJECT_VNUM="0.0.1"
+PROJECT_VNUM="0.0.2"
 
 
 # Parse arguments
@@ -59,10 +59,10 @@ while [[ $# > 0 ]]; do
       echo "Params can be one or more of the following:"
       echo "  -?, --help           : Print out this help message"
       echo "  -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)"
-      echo "  -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-R, ...)"
+      echo "  -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-SR1, ...)"
       echo "  -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)"
-      echo "  -o, --out-pkg <type> : Set output package type (zip, gz, bz2, deb or exe)"
-      echo "  -l, --logfile <name> : The name of log file"
+      echo "  -o, --out-pkg <type> : Set output package type (archive or install)"
+      echo "  -l, --logfile <name> : Set the name of log file"
       echo "  -v, --version        : Print out version number"
       echo
       exit 0
@@ -605,7 +605,7 @@ function create_selfextract_pkg()
   cd ${RELEASE_DIR}
 
   ${TEMP_DIR}/makeself.sh --notemp $PROJECT_NAME ${PKG_NAME}.bin \
-  "Eclipse based IDE for ARM MCUs" ./install.sh
+  "Eclipse based IDE for ARM MCUs" ./install.sh 2>&1 >> ${LOG_FILE}
 
   cd ${WORKING_DIR}
 
@@ -639,16 +639,18 @@ function create_compress_pkg()
 #####################################################################################
 echo "" > $LOG_FILE
 
-if [ "$OS_TYPE" == "linux32" -o "$OS_TYPE" == "linux64" -o "$OS_TYPE" == "win64" ]; then
-  if [ "$OUT_TYPE" == "exe" ]; then
-    print_msg "E" "Unsupported combination of args"
-    exit 1
+if [ "$OS_TYPE" == "linux32" -o "$OS_TYPE" == "linux64" ]; then
+  if [ "$OUT_TYPE" == "install" ]; then
+    PACKAGE_TYPE="bin"
+  else
+    PACKAGE_TYPE="gz"
   fi
-fi
-
-if [ "$OUT_TYPE" == "deb" ]; then
-  print_msg "E" "Unsupported output format yet"
-  exit 1
+else
+  if [ "$OUT_TYPE" == "install" ]; then
+    PACKAGE_TYPE="exe"
+  else
+    PACKAGE_TYPE="zip"
+  fi
 fi
 
 PACKAGE_NAME="${PROJECT_NAME}-${OS_TYPE}-`date +%y%m%d%H%M`"
@@ -666,7 +668,7 @@ if [ "$OS_TYPE" == "win32" -o "$OS_TYPE" == "win64" ]; then
   download_package "${DOXYGEN_URL}"
   download_package "${DOXYGEN_DOC}"
   download_package "${DOXYGEN_PLG}"
-  [ "$OUT_TYPE" == "exe" ] && download_package "${NSIS_URL}"
+  [ "$OUT_TYPE" == "install" ] && download_package "${NSIS_URL}"
 fi
 
 # Install Packages
@@ -708,13 +710,13 @@ cp -rf ${SOURCES_DIR}/*  ${RELEASE_DIR}/$PROJECT_NAME/
 add_info "${RELEASE_DIR}/$PROJECT_NAME"  
 
 # Create release package
-case $OUT_TYPE in
+case $PACKAGE_TYPE in
   exe) create_wininstall_pkg  "$PACKAGE_NAME";;
   bin) create_selfextract_pkg "$PACKAGE_NAME";;
   deb) create_debian_pkg      "$PACKAGE_NAME";;
   zip | gz | bz2)   
-       create_compress_pkg "$PACKAGE_NAME" "$OUT_TYPE";;
-  *)   print_msg "E" "Unsupported output format: $OUT_TYPE"; exit 1;;
+       create_compress_pkg "$PACKAGE_NAME" "$PACKAGE_TYPE";;
+  *)   print_msg "E" "Unsupported output format: $PACKAGE_TYPE"; exit 1;;
 esac
 
 # Clean working dirs

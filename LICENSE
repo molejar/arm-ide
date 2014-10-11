@@ -8,7 +8,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 All embedded modules are distributed under own license. Please visit
-the following pages for more information:
+the following pages for more informations:
 
 - ECLIPSE (http://www.eclipse.org/legal/epl-v10.html)
 - TOOLCHAIN (https://launchpad.net/gcc-arm-embedded)

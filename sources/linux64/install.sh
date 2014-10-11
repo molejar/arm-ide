@@ -93,7 +93,7 @@ rm -R $TMP_DIR
 fi
 
 echo
-echo "<I> Install UDEV rules for Debugers"
+echo "<I> Install UDEV rules for Debuggers"
 
 if [ -f $DBG_PEMICRO_RULES ]; then
   sudo cp -f $DBG_PEMICRO_RULES $UDEV_DIR
@@ -123,5 +123,5 @@ sudo ldconfig
 cd $OLD_PWD
 
 echo
-echo "<I> Installation sucesfully done"
+echo "<I> Sucsessfully installed"
 

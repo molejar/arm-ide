@@ -54,8 +54,8 @@ echo " *               ArmIDE uninstaller                   *"
 echo " ******************************************************"
 echo ""
 echo " This script automaticaly remove all ArmIDE files."
-echo " Please backup your work from \"workspace\" directory"
-echo " befor continue to uninstall !"
+echo " Please backup your work from \"Workspace\" directory"
+echo " before continue to uninstall !"
 echo ""
 read -p " Remove complete $ARMIDE_DIR ? [y/n]: " key
 echo ""
@@ -88,7 +88,7 @@ if [ "$key" = "y" ]; then
   fi
 fi
 
-echo " Uninstall Done"
+echo " Successfully Uninstalld"
 read -p " Press enter for exit..." key
 echo ""
 
