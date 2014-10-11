@@ -605,7 +605,7 @@ function create_selfextract_pkg()
   cd ${RELEASE_DIR}
 
   ${TEMP_DIR}/makeself.sh --notemp $PROJECT_NAME ${PKG_NAME}.bin \
-  "Eclipse based IDE for ARM MCUs" ./setup.sh
+  "Eclipse based IDE for ARM MCUs" ./install.sh
 
   cd ${WORKING_DIR}
 
