@@ -594,7 +594,7 @@ function create_selfextract_pkg()
 {
   local PKG_NAME="$1"
 
-  print_msg "Create self-extract package ${PKG_NAME}.bin"
+  print_msg "Create self-extract package ${PKG_NAME}.run"
 
   download_package "${MAKESELF_URL}"
 
@@ -604,7 +604,7 @@ function create_selfextract_pkg()
 
   cd ${RELEASE_DIR}
 
-  ${TEMP_DIR}/makeself.sh --notemp $PROJECT_NAME ${PKG_NAME}.bin \
+  ${TEMP_DIR}/makeself.sh --notemp $PROJECT_NAME ${PKG_NAME}.run \
   "Eclipse based IDE for ARM MCUs" ./install.sh 2>&1 >> ${LOG_FILE}
 
   cd ${WORKING_DIR}
@@ -641,7 +641,7 @@ echo "" > $LOG_FILE
 
 if [ "$OS_TYPE" == "linux32" -o "$OS_TYPE" == "linux64" ]; then
   if [ "$OUT_TYPE" == "install" ]; then
-    PACKAGE_TYPE="bin"
+    PACKAGE_TYPE="run"
   else
     PACKAGE_TYPE="gz"
   fi
@@ -712,7 +712,7 @@ add_info "${RELEASE_DIR}/$PROJECT_NAME"
 # Create release package
 case $PACKAGE_TYPE in
   exe) create_wininstall_pkg  "$PACKAGE_NAME";;
-  bin) create_selfextract_pkg "$PACKAGE_NAME";;
+  run) create_selfextract_pkg "$PACKAGE_NAME";;
   deb) create_debian_pkg      "$PACKAGE_NAME";;
   zip | gz | bz2)   
        create_compress_pkg "$PACKAGE_NAME" "$PACKAGE_TYPE";;
