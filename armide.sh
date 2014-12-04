@@ -113,8 +113,12 @@ case $OS_TYPE in
 esac
 
 # JRE Download Link
-JAVA_PAGE=`curl http://www.oracle.com/technetwork/java/javase/downloads/index.html 2>/dev/null | sed -ne "s/.*href=\"\([/a-z]*jre${JRE_VER}-downloads-[0-9]*\.html\)\".*/\1/p" | uniq`
+JAVA_PAGE=`curl http://www.oracle.com/technetwork/java/javase/downloads/index.html 2>/dev/null | sed -ne "s/.*href=\"\([/a-z]*jre${JRE_VER:0:1}-downloads-[0-9]*\.html\)\".*/\1/p" | uniq`
+if [[ ${#JRE_VER} == 1 ]]; then
 JAVA_URL=`curl http://www.oracle.com$JAVA_PAGE 2>/dev/null | sed -ne "s/.*\"filepath\":\"\(http.*jre-${JRE_VER}.*-${JRE_TYPE}\)\".*/\1/p"`
+else
+JAVA_URL=`curl http://www.oracle.com$JAVA_PAGE 2>/dev/null | sed -ne "s/.*\"filepath\":\"\(http.*jre-${JRE_VER}-${JRE_TYPE}\)\".*/\1/p"`
+fi
 JAVA_PKG=${JAVA_URL##*/}
 JAVA_COOKIE_VAL=`echo "http://www.oracle.com$JAVA_PAGE" | sed -e 's/%/%25/g' -e 's/ /%20/g' -e 's/!/%21/g' -e 's/"/%22/g' -e 's/#/%23/g' -e 's/$/%24/g' -e 's/\&/%26/g' -e "s/'/%27/g" -e 's/(/%28/g' -e 's/)/%29/g' -e 's/\*/%2A/g' -e 's/+/%2B/g' -e 's/,/%2C/g' -e 's/-/%2D/g' -e 's#/#%2F#g' -e 's/:/%3A/g' -e 's/;/%3B/g' -e 's//%3E/g' -e 's/?/%3F/g' -e 's/@/%40/g' -e 's/\[/%5B/g' -e 's/\\\/%5C/g' -e 's/\]/%5D/g' -e 's/\^/%5E/g' -e 's/_/%5F/g' -e 's/\`/%60/g' -e 's/{/%7B/g' -e 's/|/%7C/g' -e 's/}/%7D/g' -e 's/~/%7E/g' -e 's/%24$//'`
 JAVA_COOKIES="Cookie: gpw_e24=${JAVA_COOKIE_VAL}; oraclelicense=accept-securebackup-cookie"
@@ -250,10 +254,10 @@ function extract()
 
   # Parse arguments
   case $PKG_EXT in
-    gz)  tar -xzf ${PKG_PATH} -C ${PKG_ODIR} 2>&1 >> ${LOG_FILE} ;;
-    bz2) tar -xjf ${PKG_PATH} -C ${PKG_ODIR} 2>&1 >> ${LOG_FILE} ;;
-    zip) unzip -q ${PKG_PATH} -d ${PKG_ODIR} 2>&1 >> ${LOG_FILE} ;;
-    7z)  7z x ${PKG_PATH} -o${PKG_ODIR} 2>&1 >> ${LOG_FILE} ;;
+    gz)  tar -xzf ${PKG_PATH} -C ${PKG_ODIR};;
+    bz2) tar -xjf ${PKG_PATH} -C ${PKG_ODIR};;
+    zip) unzip -q ${PKG_PATH} -d ${PKG_ODIR};;
+    7z)  7z x ${PKG_PATH} -o${PKG_ODIR};;
     *) print_msg "E" "Unsupported archive: $PKG_EXT"; exit 1 ;;
   esac
 
