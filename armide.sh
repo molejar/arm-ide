@@ -14,8 +14,8 @@ fi
 # Default eclipse version (kepler-SR2, luna-SR1, ...)
 ECLIPSE_VER="kepler-SR2"
 
-# Default Java JRE version (7 or 8)
-JRE_VER="7"
+# Default Java JRE version (8)
+JRE_VER="8"
 
 # Default output package type
 OUT_TYPE="install"
@@ -60,7 +60,7 @@ while [[ $# > 0 ]]; do
       echo "  -?, --help           : Print out this help message"
       echo "  -t, --ostype  <os>   : Set host OS type (win32, win64, linux32, linux64)"
       echo "  -e, --eclipse <ver>  : Set eclipse version (kepler-SR2, luna-SR1, ...)"
-      echo "  -j, --jre-ver <ver>  : Set Java JRE version (7 or 8)"
+      echo "  -j, --jre-ver <ver>  : Set Java JRE version (8)"
       echo "  -o, --out-pkg <type> : Set output package type (archive or install)"
       echo "  -l, --logfile <name> : Set the name of log file"
       echo "  -v, --version        : Print out version number"
